@@ -1,28 +1,35 @@
 import React, { useState } from 'react';
 
 import { calculateWinner } from './util/calculateWinner';
+import { calculatePosition } from './util/calculatePosition'
 import { Board } from './components/Board';
 
 export const Game = () => {
     const [history, setHistory] = useState([{
-        squares: Array(9).fill(null)
+        squares: Array(9).fill(null),
+        positions: Array(9).fill(null)
     }]);
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setxIsNext] = useState(true);
+    const [positions, setPositions] = useState([]);
 
-    const handleClick = i => {
+    const handleClick = position => {
         const historyCurrentUtil = history.slice(0, stepNumber + 1);
         const current = historyCurrentUtil[historyCurrentUtil.length - 1];
         const squares = current.squares.slice();
-        if(calculateWinner(squares) || squares[i]) {
+        const positionList = positions.slice();
+        if(calculateWinner(squares) || squares[position]) {
             return;
         }
-        squares[i] = xIsNext ? 'X': 'O';
+        squares[position] = xIsNext ? 'X': 'O';
+        positionList.push(calculatePosition(position));
         setHistory(historyCurrentUtil.concat([{
             squares: squares
         }]));
+        setPositions(positionList);
         setStepNumber(historyCurrentUtil.length);
         setxIsNext(!xIsNext);
+        console.log(positions);
     };
 
     const jumpTo = step => {
@@ -32,15 +39,17 @@ export const Game = () => {
 
 
     const current = history[stepNumber];
-    const winner = calculateWinner(current.squares);
+    const winner = calculateWinner(current.squares); 
     
     const moves = history.map((step, move) => {
+        
         const desc = move ?
             `Go to move # ${move}`:
             'Go to game start';
+            console.log(move);
         return (
             <li key={move}>
-                <button onClick={() => jumpTo(move)}>{desc}</button>
+                <button onClick={() => jumpTo(move)}>{desc}</button> {positions[move - 1]}
             </li>
         );
     });

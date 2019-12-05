@@ -6,8 +6,7 @@ import { Board } from './components/Board';
 
 export const Game = () => {
     const [history, setHistory] = useState([{
-        squares: Array(9).fill(null),
-        positions: Array(9).fill(null)
+        squares: Array(9).fill(null)
     }]);
     const [stepNumber, setStepNumber] = useState(0);
     const [xIsNext, setxIsNext] = useState(true);
